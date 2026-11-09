@@ -21,11 +21,6 @@ from guardrails.models import (
     RuleResult,
 )
 
-
-# ---------------------------------------------------------------------------
-# Configuration
-# ---------------------------------------------------------------------------
-
 @dataclass
 class GuardrailConfig:
     """Central configuration for all guardrail rules."""
@@ -46,7 +41,7 @@ class GuardrailConfig:
 
     # Currency
     allowed_currencies: list[str] = field(
-        default_factory=lambda: ["USD", "EUR", "GBP", "CAD", "AUD", "JPY"]
+        default_factory=lambda: ["USD", "EUR", "GBP", "CAD", "AUD", "JPY","INR"]
     )
 
     # Items
@@ -75,11 +70,6 @@ class GuardrailConfig:
             "geo": 0.10,
         }
     )
-
-
-# ---------------------------------------------------------------------------
-# In-memory ledger (for velocity / duplicate / daily-spend tracking)
-# ---------------------------------------------------------------------------
 
 class OrderLedger:
     """Tracks recent orders for velocity & duplicate checks.
@@ -144,11 +134,6 @@ _ledger = OrderLedger()
 
 def get_ledger() -> OrderLedger:
     return _ledger
-
-
-# ---------------------------------------------------------------------------
-# Rule implementations
-# ---------------------------------------------------------------------------
 
 def check_amount_limits(order: OrderRequest, config: GuardrailConfig) -> RuleResult:
     """Validates per-transaction amount limits."""
@@ -436,11 +421,6 @@ def check_geo_restrictions(order: OrderRequest, config: GuardrailConfig) -> Rule
         risk_level=RiskLevel.LOW,
         message="No geographic restrictions triggered.",
     )
-
-
-# ---------------------------------------------------------------------------
-# Rule registry
-# ---------------------------------------------------------------------------
 
 ALL_RULES = [
     check_amount_limits,

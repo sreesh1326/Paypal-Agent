@@ -30,13 +30,6 @@ logger = logging.getLogger(__name__)
 
 
 class PayPalGuardrailAgent:
-    """Agentic interface for guardrail-protected PayPal orders.
-
-    Provides a set of *tools* (methods) that follow the tool-use pattern:
-    each accepts simple parameters and returns a JSON-serialisable dict.
-
-    Can be used standalone, or wired into an LLM agent via function-calling.
-    """
 
     def __init__(self, config: GuardrailConfig | None = None) -> None:
         self.config = config or GuardrailConfig()
@@ -44,13 +37,9 @@ class PayPalGuardrailAgent:
         self.order_service = OrderService(guardrail_engine=self.engine)
         self._order_history: list[dict] = []
 
-    # ==================================================================
-    # TOOL DEFINITIONS (for LLM function-calling or direct use)
-    # ==================================================================
-
     @staticmethod
     def tool_definitions() -> list[dict]:
-        """Return OpenAI-compatible tool/function definitions for LLM integration."""
+        """Return Anthropic-compatible tool/function definitions for LLM integration."""
         return [
             {
                 "type": "function",
@@ -95,7 +84,7 @@ class PayPalGuardrailAgent:
                                     "required": ["name", "quantity", "unit_price"],
                                 },
                             },
-                            "currency": {"type": "string", "default": "USD"},
+                            "currency": {"type": "string", "default": "INR"},
                             "buyer_email": {"type": "string"},
                             "buyer_country": {"type": "string"},
                             "shipping_country": {"type": "string"},
@@ -126,7 +115,7 @@ class PayPalGuardrailAgent:
                                     "required": ["name", "quantity", "unit_price"],
                                 },
                             },
-                            "currency": {"type": "string", "default": "USD"},
+                            "currency": {"type": "string", "default": "INR"},
                             "buyer_email": {"type": "string"},
                             "buyer_country": {"type": "string"},
                             "shipping_country": {"type": "string"},
@@ -187,9 +176,6 @@ class PayPalGuardrailAgent:
             },
         ]
 
-    # ==================================================================
-    # TOOL IMPLEMENTATIONS
-    # ==================================================================
 
     def list_catalog(
         self, category: str | None = None, in_stock_only: bool = False
@@ -256,7 +242,7 @@ class PayPalGuardrailAgent:
     def create_order(
         self,
         items: list[dict],
-        currency: str = "USD",
+        currency: str = "INR",
         buyer_email: str | None = None,
         buyer_country: str | None = None,
         shipping_country: str | None = None,
@@ -313,10 +299,6 @@ class PayPalGuardrailAgent:
             },
             "duplicate_window_seconds": c.duplicate_window_seconds,
         }
-
-    # ==================================================================
-    # Tool dispatcher (for LLM agent loops)
-    # ==================================================================
 
     def dispatch(self, tool_name: str, arguments: dict[str, Any]) -> dict:
         """Dispatch a tool call by name. Used by LLM agent loops."""

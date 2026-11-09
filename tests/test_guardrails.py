@@ -35,10 +35,6 @@ from guardrails.purchase_validator import GuardrailEngine
 from src.agent import PayPalGuardrailAgent
 
 
-# ---------------------------------------------------------------------------
-# Fixtures
-# ---------------------------------------------------------------------------
-
 def make_order(
     items: list[OrderItem] | None = None,
     currency: str = "USD",
@@ -66,11 +62,6 @@ def default_config() -> GuardrailConfig:
 
 def fresh_ledger() -> OrderLedger:
     return OrderLedger()
-
-
-# ===================================================================
-# AMOUNT LIMIT TESTS
-# ===================================================================
 
 class TestAmountLimits:
     def test_normal_amount_passes(self):
@@ -141,11 +132,6 @@ class TestDailySpending:
         assert result.passed is True
         assert result.risk_level == RiskLevel.MEDIUM
 
-
-# ===================================================================
-# VELOCITY TESTS
-# ===================================================================
-
 class TestVelocity:
     def test_normal_velocity_passes(self):
         ledger = fresh_ledger()
@@ -182,11 +168,6 @@ class TestVelocity:
         result = check_velocity(order, config, ledger)
         assert result.passed is False
 
-
-# ===================================================================
-# CURRENCY TESTS
-# ===================================================================
-
 class TestCurrency:
     def test_allowed_currency_passes(self):
         order = make_order(currency="USD")
@@ -206,10 +187,6 @@ class TestCurrency:
             result = check_currency(order, config)
             assert result.passed is True, f"{curr} should be allowed"
 
-
-# ===================================================================
-# BLOCKED ITEMS TESTS
-# ===================================================================
 
 class TestBlockedItems:
     def test_normal_items_pass(self):
@@ -243,10 +220,6 @@ class TestBlockedItems:
         assert result.passed is False
 
 
-# ===================================================================
-# QUANTITY TESTS
-# ===================================================================
-
 class TestQuantityLimits:
     def test_normal_quantity_passes(self):
         order = make_order(items=[OrderItem("Widget", 5, 10.00)])
@@ -269,10 +242,6 @@ class TestQuantityLimits:
         result = check_quantity_limits(order, default_config())
         assert result.passed is False
 
-
-# ===================================================================
-# DUPLICATE DETECTION TESTS
-# ===================================================================
 
 class TestDuplicateDetection:
     def test_first_order_passes(self):
@@ -316,10 +285,6 @@ class TestDuplicateDetection:
         assert result.passed is True
 
 
-# ===================================================================
-# GEO RESTRICTION TESTS
-# ===================================================================
-
 class TestGeoRestrictions:
     def test_allowed_country_passes(self):
         order = make_order(buyer_country="US", shipping_country="GB")
@@ -342,10 +307,6 @@ class TestGeoRestrictions:
         result = check_geo_restrictions(order, default_config())
         assert result.passed is True
 
-
-# ===================================================================
-# GUARDRAIL ENGINE INTEGRATION TESTS
-# ===================================================================
 
 class TestGuardrailEngine:
     def test_clean_order_approved(self):
@@ -441,11 +402,6 @@ class TestGuardrailEngine:
         assert verdict.decision == Decision.REJECT
         assert any(r.rule_name == "custom_test" for r in verdict.rule_results)
 
-
-# ===================================================================
-# AGENT TOOL DISPATCH TESTS
-# ===================================================================
-
 class TestAgentTools:
     def test_list_catalog(self):
         agent = PayPalGuardrailAgent()
@@ -517,10 +473,6 @@ class TestAgentTools:
             assert "description" in d["function"]
 
 
-# ===================================================================
-# MODEL TESTS
-# ===================================================================
-
 class TestModels:
     def test_order_item_total_price(self):
         item = OrderItem("Widget", quantity=3, unit_price=10.00)
@@ -537,10 +489,6 @@ class TestModels:
         order = make_order()
         assert len(order.request_id) == 36  # UUID format
 
-
-# ===================================================================
-# CATALOG TESTS
-# ===================================================================
 
 class TestCatalog:
     def test_get_product(self):

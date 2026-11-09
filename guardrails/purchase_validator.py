@@ -54,10 +54,6 @@ class GuardrailEngine:
         self.ledger = ledger or get_ledger()
         self._rules: list[Callable] = list(ALL_RULES)
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
-
     def evaluate(self, order: OrderRequest) -> GuardrailVerdict:
         """Run all rules and return an aggregate verdict."""
         results: list[RuleResult] = []
@@ -115,9 +111,6 @@ class GuardrailEngine:
         """Remove a rule by function name."""
         self._rules = [r for r in self._rules if r.__name__ != rule_name]
 
-    # ------------------------------------------------------------------
-    # Internals
-    # ------------------------------------------------------------------
 
     def _invoke_rule(self, rule_fn: Callable, order: OrderRequest) -> RuleResult:
         """Call a rule, injecting config/ledger as needed."""

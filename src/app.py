@@ -61,7 +61,12 @@ def _prompt_items() -> list[dict]:
             "category": category,
         })
         print(f"    ✓ Added: {name} × {qty} @ ${price:.2f}")
-    return items
+        user_response = input(" Do you want to add another item? [Yes/No] ").strip().lower()
+        if user_response not in ("y", "yes", "YeS"):
+           break
+        else:
+            continue
+    return items 
 
 
 def _prompt_order_details() -> dict:
