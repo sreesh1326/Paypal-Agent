@@ -34,7 +34,6 @@ from guardrails.rules import (
 from guardrails.purchase_validator import GuardrailEngine
 from src.agent import PayPalGuardrailAgent
 
-
 def make_order(
     items: list[OrderItem] | None = None,
     currency: str = "USD",
@@ -55,10 +54,8 @@ def make_order(
         timestamp=timestamp or datetime.now(timezone.utc),
     )
 
-
 def default_config() -> GuardrailConfig:
     return GuardrailConfig()
-
 
 def fresh_ledger() -> OrderLedger:
     return OrderLedger()
@@ -94,11 +91,6 @@ class TestAmountLimits:
         order = make_order(items=[OrderItem("Exact", 1, config.max_order_amount)])
         result = check_amount_limits(order, config)
         assert result.passed is True  # at the boundary, not exceeding
-
-
-# ===================================================================
-# DAILY SPENDING TESTS
-# ===================================================================
 
 class TestDailySpending:
     def test_within_limit_passes(self):

@@ -1,7 +1,6 @@
 """Interactive CLI application for the PayPal Guardrail Agent.
 
-Run with:  python -m src.app
-"""
+Run with:  python -m src.app"""
 
 from __future__ import annotations
 
@@ -10,7 +9,6 @@ import sys
 from textwrap import dedent
 
 from src.agent import PayPalGuardrailAgent
-
 
 BANNER = r"""
 ╔══════════════════════════════════════════════════════════════════╗
@@ -33,11 +31,9 @@ HELP_TEXT = dedent("""\
       quit                       — Exit
 """)
 
-
 def _print_json(data: dict) -> None:
     """Pretty-print a dict as coloured JSON."""
     print(json.dumps(data, indent=2, default=str))
-
 
 def _prompt_items() -> list[dict]:
     """Interactively prompt for order items."""
@@ -68,7 +64,6 @@ def _prompt_items() -> list[dict]:
             continue
     return items 
 
-
 def _prompt_order_details() -> dict:
     """Prompt for optional order metadata."""
     currency = input("  Currency [USD]: ").strip() or "USD"
@@ -81,7 +76,6 @@ def _prompt_order_details() -> dict:
         "buyer_country": buyer_co,
         "shipping_country": ship_co,
     }
-
 
 def run_demo(agent: PayPalGuardrailAgent) -> None:
     """Run a set of demo scenarios to showcase guardrail capabilities."""
@@ -161,7 +155,6 @@ def run_demo(agent: PayPalGuardrailAgent) -> None:
 
     print(f"\n{'=' * 60}")
     print("  Demo complete! All guardrail rules demonstrated.\n")
-
 
 def main() -> None:
     agent = PayPalGuardrailAgent()

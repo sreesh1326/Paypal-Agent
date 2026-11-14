@@ -205,10 +205,6 @@ class OrderService:
             "status": body.status,
         }
 
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
-
     def _create_paypal_order(
         self, items: list[OrderItem], currency: str
     ) -> dict:
